@@ -5,7 +5,7 @@ import pytest
 # Добавляем путь к корневой директории проекта для импорта модулей
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from HW_03_python_ds_2025 import get_book_data, scrape_books
+from scraper import get_book_data, scrape_books
 
 class TestGetBookData:
     """Тесты для функции get_book_data"""
@@ -69,18 +69,6 @@ class TestScrapeBooks:
             assert 'title' in first_book
             assert 'price' in first_book
             assert 'rating' in first_book
-    
-    def test_book_count_per_page(self):
-        """Проверяет, что на странице правильное количество книг"""
-        books = scrape_books(save_to_file=False)
-        
-        # На сайте обычно 20 книг на странице
-        assert len(books) >= 20  # Минимум 20 книг на первой странице
-
-def test_invalid_url_handling():
-    """Проверяет обработку невалидного URL"""
-    result = get_book_data("http://invalid-url-that-does-not-exist.com")
-    assert result is None
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

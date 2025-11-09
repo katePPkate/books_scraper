@@ -2,6 +2,8 @@ import time
 import requests
 import schedule
 from bs4 import BeautifulSoup
+
+
 def get_book_data(book_url: str) -> dict:
     """
     Парсит данные о книге со страницы каталога сайта Books to Scrape.
@@ -25,7 +27,7 @@ def get_book_data(book_url: str) -> dict:
                 'price_excl_tax': str,  # Цена без налога
                 'price_incl_tax': str,  # Цена с налогом
                 'tax': str,             # Размер налога
-                'number_available': str # Количество доступных книг
+                'number_reviews': str,  # Количество отзывов
             }
         Возвращает None в случае ошибки при загрузке страницы.
     """
@@ -77,6 +79,8 @@ def get_book_data(book_url: str) -> dict:
     except Exception as e:
         print(f"Ошибка при парсинге данных: {e}")
         return None
+
+        
 def scrape_books(save_to_file: bool = False) -> list:
     """
     Собирает данные обо всех книгах со всех страниц каталога Books to Scrape.
@@ -152,3 +156,12 @@ def save_books_to_file(books_data: list) -> None:
         
     except Exception as e:
         print(f"Ошибка при сохранении: {e}")
+
+
+def run_scheduler():
+    """Запускает планировщик для ежедневного выполнения в 19:00"""
+    schedule.every().day.at("19:00").do(lambda: scrape_books(save_to_file=True))
+
+    while True:
+        schedule.run_pending()
+        time.sleep(60)
